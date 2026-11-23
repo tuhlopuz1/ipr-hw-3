@@ -7,3 +7,5 @@
 cp .env.example .env
 docker-compose up -d --build --wait
 curl localhost:8080
+
+В файле .env переменная GREETING задает текст приветствия, а HOST_PORT - порт приложения.
