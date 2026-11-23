@@ -1,0 +1,31 @@
+services:
+  app:
+    build: .
+    environment:
+      GREETING: "${GREETING}"
+      STORAGE: redis
+      REDIS_URL: "redis://redis:6379/0"
+    ports:
+      - "${HOST_PORT}:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:8000/readyz"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis-data:
